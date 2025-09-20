@@ -42,7 +42,8 @@ export function resolveJsonData(
   //initial node with "siewnik"
   addInitialNodeWith__Siewnik();
 
-  for (let i = 0; i < json.length; i++) {
+  // for (let i = 0; i < json.length; i++) {
+  for (let i = 0; i < 3; i++) {
     const currentItem = json[i];
 
     // log values
@@ -95,12 +96,14 @@ export function resolveJsonData(
       },
       type: "nodeItem",
     });
+
+    const previousNodeId = nodes[nodes.length - 2].id;
+    const lastNodeId = nodeId;
+
+    console.log(previousNodeId, ">", lastNodeId);
+
     edges.push(
-      setArrow(
-        `${currentItem.name_from}->${currentItem.name_to}`,
-        getLastNodeWithDesiredLocalizationId(nodes, currentItem.name_from),
-        getLastNodeWithDesiredLocalizationId(nodes, currentItem.name_to)
-      )
+      setArrow(`${previousNodeId}->${lastNodeId}`, previousNodeId, lastNodeId)
     );
 
     // log values
@@ -120,36 +123,28 @@ export function resolveJsonData(
     // console.log("edges", edges);
   }
 
-  function getLastNodeWithDesiredLocalizationId(
-    nodes: Node<CustomNodeData>[],
-    name_to: string
-  ): string {
-    const foundLastNode = [...nodes]
-      .reverse()
-      .find((el) => el.id.startsWith(name_to));
+  // function getLastNodeWithDesiredLocalizationId(
+  //   nodes: Node<CustomNodeData>[],
+  //   name_to: string
+  // ): string {
+  //   const foundLastNode = [...nodes]
+  //     .reverse()
+  //     .find((el) => el.id.startsWith(name_to));
 
-    if (!foundLastNode) {
-      throw new Error(
-        "getLastNodeWithDesiredLocalizationId -> found no node with desired id"
-      );
-    }
+  //   if (!foundLastNode) {
+  //     throw new Error(
+  //       "getLastNodeWithDesiredLocalizationId -> found no node with desired id"
+  //     );
+  //   }
 
-    return foundLastNode.id;
-  }
+  //   return foundLastNode.id;
+  // }
 
   function updatePosition(
     currentNodesMap: Map<string, MapNodeItem>,
     moveUpCounter: MoveUpSignal,
     currentPosition: Position
   ) {
-    console.log("update position");
-    console.log({ currentNodesMap });
-
-    console.log(
-      "checkIfOnlyOneUniqueItemInMap(currentNodesMap)",
-      checkIfOnlyOneUniqueItemInMap(currentNodesMap)
-    );
-
     if (
       !checkIfOnlyOneUniqueItemInMap(currentNodesMap) &&
       !moveUpCounter.isCounterStarted
@@ -160,9 +155,9 @@ export function resolveJsonData(
       moveUpCounter.isCounterStarted = false;
 
     currentPosition.currentX += 200;
-    currentPosition.currentY = moveUpCounter.isCounterStarted
-      ? (currentPosition.currentY -= 80)
-      : 50;
+    // currentPosition.currentY = moveUpCounter.isCounterStarted
+    //   ? (currentPosition.currentY -= 80)
+    //   : 50;
   }
 
   function checkIfOnlyOneUniqueItemInMap(

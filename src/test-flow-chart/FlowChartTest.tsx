@@ -15,7 +15,7 @@ const nodeTypes = {
 
 const FlowChartTest = () => {
   const [initialNodes, initialEdges] = resolveJsonData(json);
-  const [nodes, _setNodes, _onNodesChange] = useNodesState(initialNodes);
+  const [nodes, _setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, _setEdges, _onEdgesChange] = useEdgesState(initialEdges);
 
   // console.log({ initialNodes });
@@ -32,7 +32,7 @@ const FlowChartTest = () => {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        // onNodesChange={onNodesChange}
+        onNodesChange={onNodesChange}
         fitView
         nodeTypes={nodeTypes}
       >

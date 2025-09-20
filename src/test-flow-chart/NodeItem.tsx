@@ -14,7 +14,7 @@ const NodeItem = (props: NodeProps<Props>) => {
       style={{
         backgroundColor: "white",
         width: 140,
-        height: 80,
+        height: 100,
         border: "1.5px solid #6B99CF",
         display: "flex",
         alignItems: "center",
@@ -29,11 +29,12 @@ const NodeItem = (props: NodeProps<Props>) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "start",
-          alignItems: "start",
+          alignItems: "",
           width: "100%",
+          height: "100%",
         }}
       >
-        <div className="text-slightly-bigger">
+        <div className="text-slightly-bigger" style={{ marginTop: 6 }}>
           {eventDate
             ? `${eventDate.toLocaleDateString(
                 "pl-PL"
@@ -47,7 +48,7 @@ const NodeItem = (props: NodeProps<Props>) => {
             justifyContent: "space-between",
             alignItems: "center",
             width: "100%",
-            marginTop: 6,
+            marginTop: 4,
           }}
         >
           <div style={{ marginTop: -2, marginBottom: -2 }}>
@@ -77,7 +78,9 @@ const NodeItem = (props: NodeProps<Props>) => {
               paddingRight: 8,
             }}
           >
-            <div className="text-default">Ilość:</div>
+            <div className="text-default" style={{ paddingTop: 3 }}>
+              Ilość:
+            </div>
             <div
               className="badge-darker text-slightly-bigger color-white"
               style={{ marginLeft: 2 }}
