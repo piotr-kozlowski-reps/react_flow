@@ -8,9 +8,11 @@ import {
 import { json } from "./FlowChartData";
 import { resolveJsonData } from "./FlowChartResolver";
 import NodeItem from "./NodeItem";
+import NodeItemNotCurrent from "./NodeItemNotCurrent";
 
 const nodeTypes = {
   nodeItem: NodeItem,
+  nodeItemNotCurrent: NodeItemNotCurrent,
 };
 
 const FlowChartTest = () => {
