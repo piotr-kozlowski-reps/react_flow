@@ -16,8 +16,6 @@ export type CustomNodeData = {
   movedTo: string;
   movedAmount: number;
   currentAmount: number;
-  // isRealMove: boolean;
-  // localizations: Localization[];
 };
 type Position = {
   currentX: number;
@@ -44,8 +42,8 @@ export function resolveJsonData(
   currentPosition.currentY = 50;
   addInitialNodeWith__Siewnik(allNodes, currentNodes, currentPosition);
 
-  // for (let i = 0; i < json.length; i++) {
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < json.length; i++) {
+    // for (let i = 0; i < 10; i++) {
     const currentItem = json[i];
     copyNodesToPreserveLastState(currentNodes, previousNodes);
     generateCurrentNodes(
@@ -56,123 +54,12 @@ export function resolveJsonData(
       i
     );
     renderNodes(allNodes, currentNodes);
+    renderEdger(allEdges, previousNodes, currentNodes, currentItem);
   }
-  // // for (let i = 0; i < json.length; i++) {
-  // for (let i = 0; i < 3; i++) {
-  //   const currentItem = json[i];
-
-  //   // log values
-  //   console.log("---------start loop---------");
-  //   console.log("currentNodesMap", currentNodesMap);
-  //   console.log("nodes", nodes);
-  //   console.log("edges", edges);
-  //   console.log("currentItem", currentItem);
-
-  //   /**  first move push everything from "Siewnik" to first localization */
-  //   if (i === 0) {
-  //     addFirstNodeEntryAndEdge(currentItem);
-  //     currentPosition.currentX = 300;
-  //     currentPosition.currentY = 50;
-  //     continue;
-  //   }
-
-  //   /** all other steps despite first */
-  //   if (!checkIfCurrentMoveHasSource(currentItem, currentNodesMap))
-  //     throw new Error(
-  //       `Node ${currentItem.name_from} has source that was not found in sources map.`
-  //     );
-
-  //   //update map
-  //   updateMapToCurrentState(currentNodesMap, currentItem);
-
-  //   //change position
-  //   updatePosition(currentNodesMap, moveUpCounter, currentPosition);
-
-  //   console.log(JSON.stringify(moveUpCounter));
-  //   console.log(JSON.stringify(currentPosition));
-
-  //   //add new node and edge
-  //   const foundNodeThatHasAlreadyNodeId = [...nodes.reverse()].find((node) =>
-  //     node.id.startsWith(currentItem.name_to)
-  //   );
-  //   const nodeId = foundNodeThatHasAlreadyNodeId
-  //     ? `${getNextIdNumberSuffix(foundNodeThatHasAlreadyNodeId.id)}`
-  //     : currentItem.name_to;
-
-  //   nodes.push({
-  //     id: nodeId,
-  //     position: { x: currentPosition.currentX, y: currentPosition.currentY },
-  //     data: {
-  //       movedFrom: currentItem.name_from,
-  //       movedTo: nodeId,
-  //       eventDate: currentItem.data_przeniesienia,
-  //       localizations: getAllLocalizations(currentNodesMap),
-  //       movedAmount: currentItem.movqty,
-  //     },
-  //     type: "nodeItem",
-  //   });
-
-  //   const previousNodeId = nodes[nodes.length - 2].id;
-  //   const lastNodeId = nodeId;
-
-  //   console.log(previousNodeId, ">", lastNodeId);
 
   //   edges.push(
   //     setArrow(`${previousNodeId}->${lastNodeId}`, previousNodeId, lastNodeId)
   //   );
-
-  //   // log values
-  //   console.log("--------- end loop---------");
-  //   console.log("currentNodesMap", currentNodesMap);
-  //   console.log("nodes", nodes);
-  //   console.log("edges", edges);
-
-  //   if (i >= 7) {
-  //     // debugger;
-  //   }
-
-  // //////logs
-  // console.log("--------- end loop---------");
-  // console.log("currentNodesMap", currentNodesMap);
-  // console.log("nodes", nodes);
-  // console.log("edges", edges);
-
-  // function getLastNodeWithDesiredLocalizationId(
-  //   nodes: Node<CustomNodeData>[],
-  //   name_to: string
-  // ): string {
-  //   const foundLastNode = [...nodes]
-  //     .reverse()
-  //     .find((el) => el.id.startsWith(name_to));
-
-  //   if (!foundLastNode) {
-  //     throw new Error(
-  //       "getLastNodeWithDesiredLocalizationId -> found no node with desired id"
-  //     );
-  //   }
-
-  //   return foundLastNode.id;
-  // }
-
-  // function updatePosition(
-  //   currentNodesMap: Map<string, MapNodeItem>,
-  //   moveUpCounter: MoveUpSignal,
-  //   currentPosition: Position
-  // ) {
-  //   if (
-  //     !checkIfOnlyOneUniqueItemInMap(currentNodesMap) &&
-  //     !moveUpCounter.isCounterStarted
-  //   )
-  //     moveUpCounter.isCounterStarted = true;
-
-  //   if (checkIfOnlyOneUniqueItemInMap(currentNodesMap))
-  //     moveUpCounter.isCounterStarted = false;
-
-  //   currentPosition.currentX += 200;
-  //   // currentPosition.currentY = moveUpCounter.isCounterStarted
-  //   //   ? (currentPosition.currentY -= 80)
-  //   //   : 50;
-  // }
 
   // function checkIfOnlyOneUniqueItemInMap(
   //   currentNodesMap: Map<string, MapNodeItem>
@@ -279,24 +166,7 @@ export function resolveJsonData(
 
   // //   return resultLocalizations;
   // // }
-  // function setArrow(id: string, name_from: string, name_to: string): Edge {
-  //   return {
-  //     id: id,
-  //     source: name_from,
-  //     target: name_to,
-  //     animated: true,
-  //     markerEnd: {
-  //       type: MarkerType.ArrowClosed,
-  //       width: 12,
-  //       height: 8,
-  //       color: "#3870B5",
-  //     },
-  //     style: {
-  //       strokeWidth: 1.5,
-  //       stroke: "#3870B5",
-  //     },
-  //   };
-  // }
+
   // function addFirstNodeEntryAndEdge(currentItem: JsonData) {
   //   currentNodesMap.set(currentItem.name_to, {
   //     id: currentItem.name_to,
@@ -330,6 +200,61 @@ export function resolveJsonData(
   //   );
   // }
 
+  function renderEdger(
+    allEdges: Edge[],
+    previousNodes: Node<CustomNodeData>[],
+    currentNodes: Node<CustomNodeData>[],
+    currentItem: JsonData
+  ) {
+    const previousNodesCopy = [...previousNodes];
+    const currentNodesCopy = [...currentNodes];
+
+    //handle current move
+    const from = currentItem.name_from;
+    const to = currentItem.name_to;
+
+    const indexOfFrom = previousNodesCopy.findIndex((node) =>
+      node.id.startsWith(from)
+    );
+    const indexOfTo = currentNodesCopy.findIndex((node) =>
+      node.id.startsWith(to)
+    );
+
+    if (indexOfFrom === -1 || indexOfTo === -1) {
+      throw new Error("renderEdger -> Index not found");
+    }
+
+    const fromNode = previousNodesCopy[indexOfFrom];
+    const toNode = currentNodesCopy[indexOfTo];
+    previousNodesCopy.splice(indexOfFrom, 1);
+    currentNodesCopy.splice(indexOfTo, 1);
+
+    allEdges.push(
+      setArrow(`${fromNode.id}->${toNode.id}`, fromNode.id, toNode.id)
+    );
+
+    // debugger;
+  }
+
+  function setArrow(id: string, name_from: string, name_to: string): Edge {
+    return {
+      id: id,
+      source: name_from,
+      target: name_to,
+      animated: true,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 12,
+        height: 8,
+        color: "#3870B5",
+      },
+      style: {
+        strokeWidth: 1.5,
+        stroke: "#3870B5",
+      },
+    };
+  }
+
   function generateCurrentNodes(
     currentItem: JsonData,
     currentNodes: Node<CustomNodeData>[],
@@ -344,12 +269,28 @@ export function resolveJsonData(
     console.log({ currentPosition });
 
     currentNodes.length = 0;
+    currentPosition.currentX += 200;
+
+    //add current move to current nodes
+    const newId = `${currentItem.name_to}_${index + 1}`;
+    currentNodes.push({
+      id: newId,
+      position: { x: currentPosition.currentX, y: currentPosition.currentY },
+      data: {
+        localizationLabel: currentItem.name_to,
+        movedFrom: currentItem.name_from,
+        movedTo: currentItem.name_to,
+        eventDate: currentItem.data_przeniesienia,
+        movedAmount: currentItem.movqty,
+        currentAmount: currentItem.movqty,
+      },
+      type: "nodeItem",
+    });
 
     for (let i = 0; i < previousNodes.length; i++) {
       //debug
       // debugger;
 
-      currentPosition.currentX += 200;
       const prev = previousNodes[i];
       const prevIdPrefix = prev.id.split("_")[0];
 
@@ -375,33 +316,31 @@ export function resolveJsonData(
 
       //if that is not current move
       else {
-        const newId = `${prevIdPrefix}_${index + 1}`;
-        currentNodes.push({
-          id: newId,
-          position: {
-            x: currentPosition.currentX,
-            y: currentPosition.currentY,
-          },
-          data: { ...prev.data },
-          type: "nodeItem",
-        });
-      }
+        // if (index === 8) {
+        //   debugger;
+        // }
 
-      //add current move to current nodes
-      const newId = `${currentItem.name_to}_${index + 1}`;
-      currentNodes.push({
-        id: newId,
-        position: { x: currentPosition.currentX, y: currentPosition.currentY },
-        data: {
-          localizationLabel: currentItem.name_to,
-          movedFrom: currentItem.name_from,
-          movedTo: currentItem.name_to,
-          eventDate: currentItem.data_przeniesienia,
-          movedAmount: currentItem.movqty,
-          currentAmount: currentItem.movqty,
-        },
-        type: "nodeItem",
-      });
+        const newId = `${prevIdPrefix}_${index + 1}`;
+        //check if node with this location is already in current nodes array
+        const foundNodeWithThisLocation = currentNodes.find(
+          (node) => node.id === newId
+        );
+
+        if (foundNodeWithThisLocation) {
+          foundNodeWithThisLocation.data.currentAmount += prev.data.movedAmount;
+        }
+        if (!foundNodeWithThisLocation) {
+          currentNodes.push({
+            id: newId,
+            position: {
+              x: currentPosition.currentX,
+              y: currentPosition.currentY,
+            },
+            data: { ...prev.data },
+            type: "nodeItemNotCurrent",
+          });
+        }
+      }
     }
 
     console.log("generateCurrentNodes - end");

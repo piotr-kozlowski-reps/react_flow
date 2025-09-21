@@ -68,7 +68,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
         <div style={{ display: "flex" }}>
           <div
             className="text-slightly-bigger"
-            style={{ marginTop: 6, opacity: 0.25 }}
+            style={{ marginTop: 6, opacity: 0.05 }}
           >
             {eventDate
               ? `${eventDate.toLocaleDateString(
@@ -78,7 +78,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
           </div>
         </div>
 
-        <div className="text-default" style={{ marginTop: 12, opacity: 0.25 }}>
+        <div className="text-default" style={{ marginTop: 12, opacity: 0.05 }}>
           transport:
         </div>
 
@@ -91,7 +91,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
             marginTop: -2,
           }}
         >
-          <div style={{ marginTop: -2, marginBottom: -2, opacity: 0.25 }}>
+          <div style={{ marginTop: -2, marginBottom: -2, opacity: 0.05 }}>
             <div
               style={{
                 display: "flex",
@@ -116,7 +116,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
               alignItems: "center",
               justifyContent: "end",
               paddingRight: 8,
-              opacity: 0.25,
+              opacity: 0.05,
             }}
           >
             <div className="text-default" style={{ paddingTop: 3 }}>
