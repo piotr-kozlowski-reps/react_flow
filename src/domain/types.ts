@@ -1,0 +1,64 @@
+export type Execution = {
+  id____: string;
+  ordnmb: string;
+  name_to: string;
+  suma: number;
+  twr_kod: string;
+  sordid: number;
+  data_przeniesienia: Date;
+  fullnm: string;
+  movfrm: null | number;
+  optime: string | null;
+  mov_to: number;
+  name_from: string;
+  ile_wz: number;
+  ile_wz_status: number;
+  movqty: number;
+  keyval: number;
+  clsnam: string;
+  prc_id: number;
+};
+export type ExecutionDTO = {
+  id____: string;
+  ordnmb: string;
+  name_to: string;
+  suma: string;
+  twr_kod: string;
+  sordid: string;
+  data_przeniesienia: string;
+  fullnm: string;
+  movfrm: null | string;
+  optime: string | null;
+  mov_to: string;
+  name_from: string;
+  ile_wz: string;
+  ile_wz_status: string;
+  movqty: string;
+  keyval: string;
+  clsnam: string;
+  prc_id: string;
+};
+
+export type MapNodeItem = {
+  id: string;
+  amount: number;
+};
+export type Localization = {
+  name: string;
+  amount: number;
+};
+export type CustomNodeData = {
+  localizationLabel: string;
+  eventDate: Date | null;
+  nextDistinctiveDate: Date | null;
+  movedFrom: string | null;
+  movedTo: string;
+  movedAmount: number;
+  currentAmount: number;
+};
+
+export type Position = {
+  currentX: number;
+  currentY: number;
+};
+export type SeparatorType = "nodeSlightSeparator" | "nodeMainSeparator";

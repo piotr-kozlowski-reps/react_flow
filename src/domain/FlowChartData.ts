@@ -1,46 +1,6 @@
-export type JsonData = {
-  id____: string;
-  ordnmb: string;
-  name_to: string;
-  suma: number;
-  twr_kod: string;
-  sordid: number;
-  data_przeniesienia: Date;
-  fullnm: string;
-  movfrm: null | number;
-  optime: string | null;
-  mov_to: number;
-  name_from: string;
-  ile_wz: number;
-  ile_wz_status: number;
-  movqty: number;
-  keyval: number;
-  clsnam: string;
-  prc_id: number;
-};
+import type { Execution, ExecutionDTO } from "./types";
 
-export type JsonDataDTO = {
-  id____: string;
-  ordnmb: string;
-  name_to: string;
-  suma: string;
-  twr_kod: string;
-  sordid: string;
-  data_przeniesienia: string;
-  fullnm: string;
-  movfrm: null | string;
-  optime: string | null;
-  mov_to: string;
-  name_from: string;
-  ile_wz: string;
-  ile_wz_status: string;
-  movqty: string;
-  keyval: string;
-  clsnam: string;
-  prc_id: string;
-};
-
-const jsonDTO: JsonDataDTO[] = [
+const executionJsonDTO: ExecutionDTO[] = [
   {
     id____: "160961918",
     ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
@@ -482,7 +442,7 @@ const jsonDTO: JsonDataDTO[] = [
     prc_id: "53558",
   },
 ];
-export const json: JsonData[] = jsonDTO.map((item) => ({
+export const execution: Execution[] = executionJsonDTO.map((item) => ({
   id____: item.id____,
   ordnmb: item.ordnmb,
   name_to: item.name_to,
@@ -497,6 +457,234 @@ export const json: JsonData[] = jsonDTO.map((item) => ({
   name_from: item.name_from,
   ile_wz: Number.parseInt(item.ile_wz),
   ile_wz_status: Number.parseInt(item.ile_wz_status),
+  movqty: Number.parseInt(item.movqty),
+  keyval: Number.parseInt(item.keyval),
+  clsnam: item.clsnam,
+  prc_id: Number.parseInt(item.prc_id),
+}));
+
+export type ScheduleDTO = {
+  id____: string;
+  ordnmb: string;
+  adddat: string;
+  twr_kod: string;
+  sordid: string;
+  data_plan: string;
+  fullnm: string;
+  name_to: string;
+  mov_from_char: string;
+  mov_to: string;
+  movqty: string;
+  keyval: string;
+  clsnam: string;
+  prc_id: string;
+};
+export type Schedule = {
+  id____: string;
+  ordnmb: string;
+  adddat: Date;
+  twr_kod: string;
+  sordid: number;
+  data_plan: Date;
+  fullnm: string;
+  name_to: string;
+  mov_from_char: string;
+  mov_to: number;
+  movqty: number;
+  keyval: number;
+  clsnam: string;
+  prc_id: number;
+};
+
+const scheduleDTO: ScheduleDTO[] = [
+  {
+    id____: "162201851",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-16 16:49:09.238777+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-19 14:49:09.069",
+    fullnm: "Kornel Grzywocz",
+    name_to: "002",
+    mov_from_char: "001",
+    mov_to: "626839",
+    movqty: "112",
+    keyval: "162201851",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162201930",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-16 16:55:29.313599+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 14:57:25.028",
+    fullnm: "Kornel Grzywocz",
+    name_to: "005",
+    mov_from_char: "003",
+    mov_to: "626842",
+    movqty: "112",
+    keyval: "162201930",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162210627",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 09:55:58.304521+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 07:55:58.153",
+    fullnm: "Kornel Grzywocz",
+    name_to: "007",
+    mov_from_char: "006",
+    mov_to: "626844",
+    movqty: "112",
+    keyval: "162210627",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162210690",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 10:03:17.203461+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 08:03:17.054",
+    fullnm: "Kornel Grzywocz",
+    name_to: "009",
+    mov_from_char: "008",
+    mov_to: "626846",
+    movqty: "12",
+    keyval: "162210690",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162210691",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 10:03:17.203461+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 08:03:17.054",
+    fullnm: "Kornel Grzywocz",
+    name_to: "009",
+    mov_from_char: "007",
+    mov_to: "626846",
+    movqty: "100",
+    keyval: "162210691",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162210907",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 10:22:07.582144+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 08:25:06.345",
+    fullnm: "Kornel Grzywocz",
+    name_to: "012",
+    mov_from_char: "010",
+    mov_to: "626849",
+    movqty: "60",
+    keyval: "162210907",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162210908",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 10:22:07.582144+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 08:25:06.345",
+    fullnm: "Kornel Grzywocz",
+    name_to: "012",
+    mov_from_char: "011",
+    mov_to: "626849",
+    movqty: "52",
+    keyval: "162210908",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162212393",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 11:46:40.107649+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-17 09:46:39.891",
+    fullnm: "Kornel Grzywocz",
+    name_to: "014",
+    mov_from_char: "013",
+    mov_to: "626851",
+    movqty: "22",
+    keyval: "162212393",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162212394",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 11:46:40.107649+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-17 09:46:39.891",
+    fullnm: "Kornel Grzywocz",
+    name_to: "014",
+    mov_from_char: "012",
+    mov_to: "626851",
+    movqty: "90",
+    keyval: "162212394",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162212718",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 12:21:03.244409+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 10:21:03.121",
+    fullnm: "Kornel Grzywocz",
+    name_to: "016",
+    mov_from_char: "014",
+    mov_to: "626853",
+    movqty: "72",
+    keyval: "162212718",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+  {
+    id____: "162212719",
+    ordnmb: "ZP-3889/25/GRU PRO.BROK.NAXO+V.TN240",
+    adddat: "2025-09-17 12:21:03.244409+02",
+    twr_kod: "PRO.BROK.NAXO+V.TN240",
+    sordid: "160961084",
+    data_plan: "2025-09-20 10:21:03.121",
+    fullnm: "Kornel Grzywocz",
+    name_to: "016",
+    mov_from_char: "015",
+    mov_to: "626853",
+    movqty: "40",
+    keyval: "162212719",
+    clsnam: "CUSTOM",
+    prc_id: "53558",
+  },
+];
+export const schedule: Schedule[] = scheduleDTO.map((item) => ({
+  id____: item.id____,
+  ordnmb: item.ordnmb,
+  adddat: new Date(item.adddat),
+  twr_kod: item.twr_kod,
+  sordid: Number.parseInt(item.sordid),
+  data_plan: new Date(item.data_plan),
+  fullnm: item.fullnm,
+  name_to: item.name_to,
+  mov_from_char: item.mov_from_char,
+  mov_to: Number.parseInt(item.mov_to),
   movqty: Number.parseInt(item.movqty),
   keyval: Number.parseInt(item.keyval),
   clsnam: item.clsnam,

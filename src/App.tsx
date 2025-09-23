@@ -1,4 +1,4 @@
-import FlowChartTest from "./test-flow-chart/FlowChartTest";
+import FlowChartEntry from "./ui/FlowChart";
 
 function App() {
   return (
@@ -12,8 +12,7 @@ function App() {
         height: "100vh",
       }}
     >
-      <h1>Flow Chart</h1>
-      <FlowChartTest />
+      <FlowChartEntry />
     </div>
   );
 }

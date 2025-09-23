@@ -1,17 +1,10 @@
 import { FiChevronRight } from "react-icons/fi";
-import { FiArrowRight } from "react-icons/fi";
 import type { CustomNodeData } from "./FlowChartResolver";
-import {
-  type NodeProps,
-  type Node,
-  Handle,
-  Position,
-  MarkerType,
-} from "@xyflow/react";
+import { type NodeProps, type Node, Handle, Position } from "@xyflow/react";
 
 type Props = Node<CustomNodeData>;
 
-const NodeItemNotCurrent = (props: NodeProps<Props>) => {
+const NodeItem = (props: NodeProps<Props>) => {
   const { data } = props;
   const {
     eventDate,
@@ -28,7 +21,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
         backgroundColor: "white",
         width: 140,
         height: 94,
-        border: "1.5px dashed #ccc",
+        border: "1.5px solid #6B99CF",
         display: "flex",
         alignItems: "center",
         justifyContent: "start",
@@ -66,10 +59,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
         }}
       >
         <div style={{ display: "flex" }}>
-          <div
-            className="text-slightly-bigger"
-            style={{ marginTop: 6, opacity: 0.05 }}
-          >
+          <div className="text-slightly-bigger" style={{ marginTop: 6 }}>
             {eventDate
               ? `${eventDate.toLocaleDateString(
                   "pl-PL"
@@ -78,7 +68,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
           </div>
         </div>
 
-        <div className="text-default" style={{ marginTop: 12, opacity: 0.05 }}>
+        <div className="text-default" style={{ marginTop: 12 }}>
           transport:
         </div>
 
@@ -91,7 +81,7 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
             marginTop: -2,
           }}
         >
-          <div style={{ marginTop: -2, marginBottom: -2, opacity: 0.05 }}>
+          <div style={{ marginTop: -2, marginBottom: -2 }}>
             <div
               style={{
                 display: "flex",
@@ -116,7 +106,6 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
               alignItems: "center",
               justifyContent: "end",
               paddingRight: 8,
-              opacity: 0.05,
             }}
           >
             <div className="text-default" style={{ paddingTop: 3 }}>
@@ -143,6 +132,43 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
             {currentAmount} (tac)
           </div>
         </div>
+
+        {/* <div className="text-bold" style={{ paddingTop: 6 }}>
+          stan na lokalizacjach:
+        </div> */}
+        {/* <div style={{ paddingLeft: 8 }}>
+          {localizations.map((localization) => (
+            <div
+              key={localization.name}
+              className="text-bold"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: 1,
+                justifyContent: "start",
+              }}
+            >
+              <div
+                className="badge-small color-white"
+                style={{ paddingTop: 2 }}
+              >
+                {localization.name}
+              </div>
+              <div
+                className="text-bold"
+                style={{ marginLeft: 2, marginRight: 2, paddingTop: 2 }}
+              >
+                :
+              </div>
+              <div
+                className="badge-small-darker color-white"
+                style={{ paddingTop: 2 }}
+              >
+                {localization.amount} (tac)
+              </div>
+            </div>
+          ))}
+        </div> */}
       </div>
 
       <Handle type="source" position={Position.Right} />
@@ -150,4 +176,4 @@ const NodeItemNotCurrent = (props: NodeProps<Props>) => {
     </div>
   );
 };
-export default NodeItemNotCurrent;
+export default NodeItem;

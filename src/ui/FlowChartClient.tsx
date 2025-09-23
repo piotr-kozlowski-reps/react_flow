@@ -4,24 +4,27 @@ import {
   ReactFlow,
   useEdgesState,
   useNodesState,
+  type Edge,
+  type Node,
 } from "@xyflow/react";
-import { json } from "./FlowChartData";
-import { resolveJsonData } from "./FlowChartResolver";
 import NodeItem from "./NodeItem";
 import NodeItemNotCurrent from "./NodeItemNotCurrent";
+import NodeSlightSeparator from "./NodeSlightSeparator";
+import NodeMainSeparator from "./NodeMainSeparator";
+import NodeEventsInfo from "./NodeEventsInfo";
 
 const nodeTypes = {
   nodeItem: NodeItem,
   nodeItemNotCurrent: NodeItemNotCurrent,
+  nodeSlightSeparator: NodeSlightSeparator,
+  nodeMainSeparator: NodeMainSeparator,
+  nodeEventsInfo: NodeEventsInfo,
 };
 
-const FlowChartTest = () => {
-  const [initialNodes, initialEdges] = resolveJsonData(json);
+const FlowChartClient = (props: Props) => {
+  const { initialNodes, initialEdges } = props;
   const [nodes, _setNodes, _onNodesChange] = useNodesState(initialNodes);
   const [edges, _setEdges, _onEdgesChange] = useEdgesState(initialEdges);
-
-  // console.log({ initialNodes });
-
   return (
     <div
       style={{
@@ -31,13 +34,7 @@ const FlowChartTest = () => {
         border: "1px dashed gray",
       }}
     >
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        // onNodesChange={onNodesChange}
-        fitView
-        nodeTypes={nodeTypes}
-      >
+      <ReactFlow nodes={nodes} edges={edges} fitView nodeTypes={nodeTypes}>
         <Background />
         <Controls />
       </ReactFlow>
@@ -45,4 +42,4 @@ const FlowChartTest = () => {
   );
 };
 
-export default FlowChartTest;
+export default FlowChartClient;

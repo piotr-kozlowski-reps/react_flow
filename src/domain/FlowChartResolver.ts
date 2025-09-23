@@ -1,30 +1,26 @@
 import { MarkerType, type Edge, type Node } from "@xyflow/react";
-import type { JsonData } from "./FlowChartData";
+import type {
+  CustomNodeData,
+  Execution,
+  Position,
+  SeparatorType,
+} from "./types";
+import { getExecutionData } from "./executionData";
 
-export type MapNodeItem = {
-  id: string;
-  amount: number;
-};
-export type Localization = {
-  name: string;
-  amount: number;
-};
-export type CustomNodeData = {
-  localizationLabel: string;
-  eventDate: Date | null;
-  movedFrom: string | null;
-  movedTo: string;
-  movedAmount: number;
-  currentAmount: number;
-};
-type Position = {
-  currentX: number;
-  currentY: number;
-};
+// const tempPrcId = 53558;
+const tempPrcId = 53726;
+const tempToken =
+  "10d448308bb57c8484ed36a33885c5ce7feabafc1604d03ee7d5f4cfd76749b8";
 
-export function resolveJsonData(
-  json: JsonData[]
-): [nodes: Node[], edges: Edge[]] {
+export async function resolveJsonData(): Promise<
+  [nodes: Node[], edges: Edge[]]
+> {
+  //fetch
+  const executionData: Execution[] = await getExecutionData(
+    tempPrcId,
+    tempToken
+  );
+
   //state
   const currentNodes: Node<CustomNodeData>[] = [];
   const previousNodes: Node<CustomNodeData>[] = [];
@@ -42,9 +38,9 @@ export function resolveJsonData(
   currentPosition.currentY = 50;
   addInitialNodeWith__Siewnik(allNodes, currentNodes, currentPosition);
 
-  for (let i = 0; i < json.length; i++) {
-    // for (let i = 0; i < 10; i++) {
-    const currentItem = json[i];
+  for (let i = 0; i < executionData.length; i++) {
+    // for (let i = 0; i < 2; i++) {
+    const currentItem = executionData[i];
     copyNodesToPreserveLastState(currentNodes, previousNodes);
     generateCurrentNodes(
       currentItem,
@@ -54,157 +50,49 @@ export function resolveJsonData(
       i
     );
     renderNodes(allNodes, currentNodes);
-    renderEdger(allEdges, previousNodes, currentNodes, currentItem);
+    renderEdges(allEdges, previousNodes, currentNodes, currentItem);
+    addInformationNode(allNodes, currentPosition, currentItem, i);
+    addSeparatorNode({
+      allNodes,
+      currentPosition,
+      currentItem,
+      index: i,
+      executionData,
+    });
   }
 
-  //   edges.push(
-  //     setArrow(`${previousNodeId}->${lastNodeId}`, previousNodeId, lastNodeId)
-  //   );
+  function addInformationNode(
+    allNodes: Node<CustomNodeData>[],
+    currentPosition: Position,
+    currentItem: Execution,
+    index: number
+  ) {
+    const isNewMainSeparator = checkIfIsNewMainSeparator(allNodes, currentItem);
+    if (!isNewMainSeparator) return;
 
-  // function checkIfOnlyOneUniqueItemInMap(
-  //   currentNodesMap: Map<string, MapNodeItem>
-  // ): boolean {
-  //   const foundIUniqueItems: string[] = [];
-
-  //   for (const [key, _value] of currentNodesMap) {
-  //     const hasKeySign_ = key.includes("_");
-  //     if (hasKeySign_) {
-  //       const splittedString = key.split("-");
-  //       if (!foundIUniqueItems.includes(key))
-  //         foundIUniqueItems.push(splittedString[0]);
-  //     }
-  //     if (!hasKeySign_) {
-  //       if (!foundIUniqueItems.includes(key)) foundIUniqueItems.push(key);
-  //     }
-  //   }
-
-  //   console.log({ foundIUniqueItems });
-
-  //   return foundIUniqueItems.length === 1;
-  // }
-
-  // function getNextIdNumberSuffix(previousId: string): string {
-  //   if (previousId.includes("_")) {
-  //     const splittedId = previousId.split("_");
-  //     return `${splittedId[0]}_${Number.parseInt(splittedId[1]) + 1}`;
-  //   } else {
-  //     return `${previousId}_1`;
-  //   }
-  // }
-
-  // function updateMapToCurrentState(
-  //   currentNodesMap: Map<string, MapNodeItem>,
-  //   currentItem: JsonData
-  // ) {
-  //   //update entry according to new quantity
-  //   for (const [key, value] of currentNodesMap) {
-  //     if (currentItem.name_from === key) {
-  //       value.amount -= currentItem.movqty;
-  //     }
-  //   }
-
-  //   //update or add new entry with name_to
-  //   if (currentNodesMap.has(currentItem.name_to)) {
-  //     currentNodesMap.set(currentItem.name_to, {
-  //       id: currentItem.name_to,
-  //       amount:
-  //         currentNodesMap.get(currentItem.name_to)!.amount + currentItem.movqty,
-  //     });
-  //   } else {
-  //     currentNodesMap.set(currentItem.name_to, {
-  //       id: currentItem.name_to,
-  //       amount: currentItem.movqty,
-  //     });
-  //   }
-
-  //   //delete all localizations with no trays
-  //   for (const [key, value] of currentNodesMap) {
-  //     if (value.amount <= 0) {
-  //       currentNodesMap.delete(key);
-  //     }
-  //   }
-  // }
-  // function checkIfCurrentMoveHasSource(
-  //   currentItem: JsonData,
-  //   currentNodesMap: Map<string, MapNodeItem>
-  // ): boolean {
-  //   // console.log("checkIfCurrentMoveHasSource");
-  //   // console.log("currentItem", currentItem);
-  //   // console.log("currentNodesMap", currentNodesMap);
-
-  //   return currentNodesMap.has(currentItem.name_from);
-  // }
-  // function getAllLocalizations(
-  //   currentNodesMap: Map<string, MapNodeItem>
-  // ): Localization[] {
-  //   const localizations: Localization[] = [];
-  //   for (const [key, value] of currentNodesMap) {
-  //     localizations.push({
-  //       name: key,
-  //       amount: value.amount,
-  //     });
-  //   }
-
-  //   return localizations;
-  // }
-  // // function updateLocalizationsAccordingToCurrentMove(
-  // //   foundLocalizations: Localization[],
-  // //   currentMove: JsonData
-  // // ): Localization[] {
-  // //   const resultLocalizations: Localization[] = [];
-
-  // //   foundLocalizations.forEach((loc) => {
-  // //     if (loc.name === currentMove.name_from) {
-  // //       const resultAmount = loc.amount - currentMove.movqty;
-  // //       if (resultAmount > 0) {
-  // //         resultLocalizations.push({ name: loc.name, amount: resultAmount });
-  // //       }
-  // //     } else {
-  // //       resultLocalizations.push(loc);
-  // //     }
-  // //   });
-
-  // //   return resultLocalizations;
-  // // }
-
-  // function addFirstNodeEntryAndEdge(currentItem: JsonData) {
-  //   currentNodesMap.set(currentItem.name_to, {
-  //     id: currentItem.name_to,
-  //     amount: currentItem.movqty,
-  //   });
-  //   const foundNode = currentNodesMap.get(currentItem.name_to);
-  //   if (!foundNode) {
-  //     throw new Error(`Node ${currentItem.name_to} not found in map`);
-  //   }
-
-  //   currentPosition.currentX = 300;
-  //   currentPosition.currentY = 50;
-  //   nodes.push({
-  //     id: foundNode.id,
-  //     position: { x: currentPosition.currentX, y: currentPosition.currentY },
-  //     data: {
-  //       movedFrom: "Siewnik",
-  //       movedTo: foundNode.id,
-  //       localizations: getAllLocalizations(currentNodesMap),
-  //       eventDate: currentItem.data_przeniesienia,
-  //       movedAmount: currentItem.movqty,
-  //     },
-  //     type: "nodeItem",
-  //   });
-  //   edges.push(
-  //     setArrow(
-  //       `Siewnik->${currentItem.name_to}`,
-  //       "Siewnik",
-  //       currentItem.name_to
-  //     )
-  //   );
-  // }
-
-  function renderEdger(
+    allNodes.push({
+      id: `info____${index + 1}`,
+      position: {
+        x: currentPosition.currentX - 25,
+        y: currentPosition.currentY + 140,
+      },
+      data: {
+        localizationLabel: "info",
+        movedFrom: "",
+        movedTo: "",
+        eventDate: null,
+        movedAmount: 0,
+        currentAmount: 0,
+        nextDistinctiveDate: null,
+      },
+      type: "nodeEventsInfo",
+    });
+  }
+  function renderEdges(
     allEdges: Edge[],
     previousNodes: Node<CustomNodeData>[],
     currentNodes: Node<CustomNodeData>[],
-    currentItem: JsonData
+    currentItem: Execution
   ) {
     const previousNodesCopy = [...previousNodes];
     const currentNodesCopy = [...currentNodes];
@@ -235,7 +123,6 @@ export function resolveJsonData(
 
     // debugger;
   }
-
   function setArrow(id: string, name_from: string, name_to: string): Edge {
     return {
       id: id,
@@ -254,19 +141,18 @@ export function resolveJsonData(
       },
     };
   }
-
   function generateCurrentNodes(
-    currentItem: JsonData,
+    currentItem: Execution,
     currentNodes: Node<CustomNodeData>[],
     previousNodes: Node<CustomNodeData>[],
     currentPosition: Position,
     index: number
   ) {
-    console.log("generateCurrentNodes - start");
-    console.log({ currentItem });
-    console.log("currentNodes", [...currentNodes]);
-    console.log("previousNodes", [...previousNodes]);
-    console.log({ currentPosition });
+    // console.log("generateCurrentNodes - start");
+    // console.log({ currentItem });
+    // console.log("currentNodes", [...currentNodes]);
+    // console.log("previousNodes", [...previousNodes]);
+    // console.log({ currentPosition });
 
     currentNodes.length = 0;
     currentPosition.currentX += 200;
@@ -283,6 +169,7 @@ export function resolveJsonData(
         eventDate: currentItem.data_przeniesienia,
         movedAmount: currentItem.movqty,
         currentAmount: currentItem.movqty,
+        nextDistinctiveDate: null,
       },
       type: "nodeItem",
     });
@@ -343,10 +230,127 @@ export function resolveJsonData(
       }
     }
 
-    console.log("generateCurrentNodes - end");
-    console.log("currentNodes", [...currentNodes]);
-    console.log("previousNodes", [...previousNodes]);
-    console.log({ currentPosition });
+    // console.log("generateCurrentNodes - end");
+    // console.log("currentNodes", [...currentNodes]);
+    // console.log("previousNodes", [...previousNodes]);
+    // console.log({ currentPosition });
+  }
+  function createNewDatObjectWithOnlyYearMonthDay(date: Date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    return new Date(year, month, day);
+  }
+
+  type SeparatorNodeData = {
+    allNodes: Node<CustomNodeData>[];
+    currentPosition: Position;
+    currentItem: Execution;
+    index: number;
+    executionData: Execution[];
+  };
+  function addSeparatorNode(data: SeparatorNodeData) {
+    const { allNodes, currentItem, currentPosition, index, executionData } =
+      data;
+    const isNewMainSeparator = checkIfIsNewMainSeparator(allNodes, currentItem);
+
+    if (isNewMainSeparator) {
+      const executionsFilteredByDateLaterThanCurrentNode = executionData.filter(
+        (item) => {
+          if (!item.data_przeniesienia) {
+            return false;
+          }
+
+          const itemDate = createNewDatObjectWithOnlyYearMonthDay(
+            item.data_przeniesienia
+          );
+          const currentItemDate = createNewDatObjectWithOnlyYearMonthDay(
+            currentItem.data_przeniesienia
+          );
+
+          return itemDate > currentItemDate;
+        }
+      );
+
+      console.log({ currentItem });
+      console.log({ executionsFilteredByDateLaterThanCurrentNode });
+      console.log(
+        "currentItem.data_przeniesienia",
+        currentItem.data_przeniesienia
+      );
+      // console.log(
+      //   "executionsFilteredByDateLaterThanCurrentNode[0].data_przeniesienia",
+      //   executionsFilteredByDateLaterThanCurrentNode[0].data_przeniesienia?
+      // );
+
+      allNodes.push(
+        createSeparatorNode(
+          `separator_${index + 1}`,
+          currentItem.data_przeniesienia,
+          "nodeMainSeparator",
+          currentPosition,
+          executionsFilteredByDateLaterThanCurrentNode.length > 0 &&
+            executionsFilteredByDateLaterThanCurrentNode[0].data_przeniesienia
+            ? executionsFilteredByDateLaterThanCurrentNode[0].data_przeniesienia
+            : null
+        )
+      );
+      return;
+    }
+
+    allNodes.push(
+      createSeparatorNode(
+        `separator_${index + 1}`,
+        currentItem.data_przeniesienia,
+        "nodeSlightSeparator",
+        currentPosition,
+        null
+      )
+    );
+  }
+  function checkIfIsNewMainSeparator(
+    allNodes: Node<CustomNodeData>[],
+    currentItem: Execution
+  ) {
+    const lastSeparatorNode = [...allNodes]
+      .reverse()
+      .find((node) => node.id.startsWith("separator"));
+
+    //if there's no last separator or there's new day compared to last separator
+    const lastSeparatorDate = lastSeparatorNode?.data.eventDate
+      ?.toISOString()
+      .split("T")[0];
+    const currentItemDate = currentItem.data_przeniesienia
+      .toISOString()
+      .split("T")[0];
+
+    return !lastSeparatorNode || currentItemDate !== lastSeparatorDate;
+  }
+  function createSeparatorNode(
+    id: string,
+    eventDate: Date,
+    separatorType: SeparatorType,
+    currentPosition: Position,
+    nextDistinctiveDate: Date | null
+  ): Node<CustomNodeData> {
+    return {
+      id: id,
+      position: {
+        x: currentPosition.currentX - 25,
+        y: currentPosition.currentY - 200,
+      },
+      data: {
+        currentAmount: 0,
+        eventDate: eventDate,
+        movedAmount: 0,
+        movedFrom: null,
+        movedTo: "",
+        localizationLabel: "",
+        nextDistinctiveDate: nextDistinctiveDate,
+      },
+      type: separatorType,
+      draggable: false,
+    };
   }
   function copyNodesToPreserveLastState(
     currentNodes: Node<CustomNodeData>[],
@@ -370,8 +374,9 @@ export function resolveJsonData(
         movedFrom: null,
         movedTo: "Siewnik",
         eventDate: null,
-        movedAmount: json[0].suma,
-        currentAmount: json[0].suma,
+        movedAmount: executionData[0].suma,
+        currentAmount: executionData[0].suma,
+        nextDistinctiveDate: null,
       },
       type: "nodeItem",
     });

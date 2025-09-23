@@ -120,3 +120,22 @@ button:focus-visible {
 .color-white {
   color: white;
 }
+
+.cut-icon {
+  background-color: #4fbd58;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.water-irrigation-icon {
+  background-color: #4f91bd;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
