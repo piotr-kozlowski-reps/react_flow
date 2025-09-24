@@ -1,3 +1,5 @@
+import { type Edge, type Node } from "@xyflow/react";
+
 export type Execution = {
   id____: string;
   ordnmb: string;
@@ -62,3 +64,18 @@ export type Position = {
   currentY: number;
 };
 export type SeparatorType = "nodeSlightSeparator" | "nodeMainSeparator";
+
+export type SeparatorNodeData = {
+  allNodes: Node<CustomNodeData>[];
+  currentPosition: Position;
+  currentItem: Execution;
+  index: number;
+  executionData: Execution[];
+};
+
+export type TransportData = {
+  allNodes: Node<CustomNodeData>[];
+  allEdges: Edge[];
+  currentPosition: Position;
+  executionData: Execution[];
+};

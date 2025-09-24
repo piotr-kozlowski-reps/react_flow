@@ -1,5 +1,5 @@
-import Cut from "./Cut";
-import WaterIrrigation from "./WaterIrrigation";
+// import Cut from "./Cut";
+// import WaterIrrigation from "./WaterIrrigation";
 
 const NodeEventsInfo = () => {
   return (
@@ -13,8 +13,8 @@ const NodeEventsInfo = () => {
         position: "relative",
       }}
     >
-      <Cut />
-      <WaterIrrigation />
+      {/* <Cut />
+      <WaterIrrigation /> */}
       {/* <div
         style={{ position: "absolute", left: 10, top: 320, textWrap: "nowrap" }}
         className="text-slightly-bigger badge-darker color-white"
