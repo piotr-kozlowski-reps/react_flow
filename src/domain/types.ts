@@ -79,3 +79,7 @@ export type TransportData = {
   currentPosition: Position;
   executionData: Execution[];
 };
+
+export type CutsData = {
+  allNodes: Node<CustomNodeData>[];
+};

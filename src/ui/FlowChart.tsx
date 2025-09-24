@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { resolveJsonData } from "../domain/FlowChartResolver";
 import {
   Background,
   Controls,
@@ -16,6 +15,8 @@ import NodeMainSeparator from "./NodeMainSeparator";
 import NodeEventsInfo from "./NodeEventsInfo";
 import ErrorInfo from "./ErrorInfo";
 import type { AxiosError } from "axios";
+import MainHorizontalSeparator from "./MainHorizontalSeparator";
+import { useFlowChartResolver } from "../domain/useFlowChartResolver";
 
 const nodeTypes = {
   nodeItem: NodeItem,
@@ -23,9 +24,13 @@ const nodeTypes = {
   nodeSlightSeparator: NodeSlightSeparator,
   nodeMainSeparator: NodeMainSeparator,
   nodeEventsInfo: NodeEventsInfo,
+  mainHorizontalSeparator: MainHorizontalSeparator,
 };
 
 const FlowChartEntry = () => {
+  const { resolveJsonData } = useFlowChartResolver();
+
+  //state
   const [nodes, setNodes, _onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, _onEdgesChange] = useEdgesState<Edge>([]);
   const [error, setIsError] = useState<AxiosError | null>(null);

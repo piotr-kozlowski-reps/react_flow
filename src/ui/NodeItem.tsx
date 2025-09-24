@@ -1,6 +1,6 @@
 import { FiChevronRight } from "react-icons/fi";
-import type { CustomNodeData } from "./FlowChartResolver";
 import { type NodeProps, type Node, Handle, Position } from "@xyflow/react";
+import type { CustomNodeData } from "../domain/types";
 
 type Props = Node<CustomNodeData>;
 
