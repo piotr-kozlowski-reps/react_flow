@@ -56,6 +56,7 @@ export const useFlowChartResolver = () => {
 
   function createCuts(data: CutsData) {
     const { allNodes } = data;
+    console.log({ allNodes });
 
     // addMainHorizontalSeparatorNode(allNodes);
   }
@@ -98,7 +99,7 @@ export const useFlowChartResolver = () => {
     );
 
     for (let i = 0; i < executionData.length; i++) {
-      // for (let i = 0; i < 6; i++) {
+      // for (let i = 0; i < 7; i++) {
       const currentItem = executionData[i];
       copyNodesToPreserveLastState(currentNodes, previousNodes);
       generateCurrentNodes(
@@ -209,134 +210,25 @@ export const useFlowChartResolver = () => {
     currentNodes.length = 0;
     currentPosition.currentX += 200;
 
-    // if (index === 5) {
-    //   debugger;
-    // }
-
-    addCurrentMoveToCurrentNodes(
-      currentItem,
-      index,
-      previousNodes,
-      currentNodes,
-      currentPosition
-    );
-
-    for (let i = 0; i < previousNodes.length; i++) {
-      // console.log("---start---");
-      // console.log({ currentItem });
-      // console.log({ previousNodes });
-      // console.log({ currentNodes });
-
-      const prev = previousNodes[i];
-      const prevIdPrefix = prev.id.split("_")[0];
-
-      //if that is current move
-      if (currentItem.name_from === prevIdPrefix) {
-        const currentAmountAfterMove =
-          prev.data.currentAmount - currentItem.movqty;
-
-        if (currentAmountAfterMove > 0) {
-          //is not empty -> move to current nodes
-          const newId = `${prevIdPrefix}_${index + 1}`;
-          currentNodes.push({
-            id: newId,
-            position: {
-              x: currentPosition.currentX,
-              y: currentPosition.currentY,
-            },
-            data: { ...prev.data, currentAmount: currentAmountAfterMove },
-            type: "nodeItemNotCurrent",
-          });
-        }
-      }
-
-      //if that is not current move
-      else {
-        const newId = `${prevIdPrefix}_${index + 1}`;
-        //check if node with this location is already in current nodes array
-        const foundNodeWithThisLocation = currentNodes.find(
-          (node) => node.id === newId
-        );
-
-        if (foundNodeWithThisLocation) {
-          foundNodeWithThisLocation.data.currentAmount += prev.data.movedAmount;
-        }
-        if (!foundNodeWithThisLocation) {
-          currentNodes.push({
-            id: newId,
-            position: {
-              x: currentPosition.currentX,
-              y: currentPosition.currentY,
-            },
-            data: { ...prev.data },
-            type: "nodeItemNotCurrent",
-          });
-        }
-      }
-    }
-
-    // console.log("---end---");
+    // console.log("---start---");
     // console.log({ currentItem });
     // console.log({ previousNodes });
-    // console.log({ currentNodes });
-  }
-  function addCurrentMoveToCurrentNodes(
-    currentItem: Execution,
-    index: number,
-    previousNodes: Node<CustomNodeData>[],
-    currentNodes: Node<CustomNodeData>[],
-    currentPosition: Position
-  ) {
-    const newId = `${currentItem.name_to}_${index + 1}`;
 
-    //check if there's node in previous nodes with target location
-    const foundItemWithTargetLocationInPreviousNodes = previousNodes.find(
-      (node) => node.id.startsWith(currentItem.name_to)
+    const tempPrevNodes = [...previousNodes];
+    ////current move
+    //find prev node with id startsWith name_from
+    const foundPrevNode = tempPrevNodes.find((node) =>
+      node.id.startsWith(currentItem.name_from)
     );
-
-    if (foundItemWithTargetLocationInPreviousNodes) {
-      // const currentAmountAfterMove =
-      //   foundItemWithTargetLocationInPreviousNodes.data.currentAmount +
-      //   currentItem.movqty;
-
-      //wywal node ktory dodasz z poprzednich lokalizacji
-      const indexOfFoundItemWithTargetLocationInPreviousNodes =
-        previousNodes.findIndex((node) => node.id.startsWith(newId));
-
-      foundItemWithTargetLocationInPreviousNodes.data.currentAmount =
-        currentItem.movqty;
-      // console.log({ foundItemWithTargetLocationInPreviousNodes });
-
-      previousNodes[indexOfFoundItemWithTargetLocationInPreviousNodes] =
-        foundItemWithTargetLocationInPreviousNodes;
-
-      // previousNodes.splice(
-      //   indexOfFoundItemWithTargetLocationInPreviousNodes,
-      //   1
-      // );
-
-      //add new node
-      currentNodes.push({
-        id: newId,
-        position: {
-          x: currentPosition.currentX,
-          y: currentPosition.currentY,
-        },
-        data: {
-          localizationLabel: currentItem.name_to,
-          movedFrom: currentItem.name_from,
-          movedTo: currentItem.name_to,
-          eventDate: currentItem.data_przeniesienia,
-          movedAmount: currentItem.movqty,
-          currentAmount: currentItem.movqty,
-          nextDistinctiveDate: null,
-        },
-        type: "nodeItem",
-      });
-
-      return;
+    if (!foundPrevNode) {
+      throw new Error("addCurrentMoveToCurrentNodes -> Node not found");
     }
 
+    const amountOfTraysAfterMove =
+      foundPrevNode.data.currentAmount - currentItem.movqty;
+
+    //add current move
+    const newId = `${currentItem.name_to}_${index + 1}`;
     currentNodes.push({
       id: newId,
       position: {
@@ -354,7 +246,215 @@ export const useFlowChartResolver = () => {
       },
       type: "nodeItem",
     });
+
+    //if any tray stayed in from_location -> add it to current nodes, too
+    if (amountOfTraysAfterMove > 0) {
+      const newId = `${foundPrevNode.data.movedTo}_${index + 1}`;
+      currentNodes.push({
+        id: newId,
+        position: {
+          x: currentPosition.currentX,
+          y: currentPosition.currentY,
+        },
+        data: {
+          localizationLabel: foundPrevNode.data.localizationLabel,
+          movedFrom: foundPrevNode.data.movedFrom,
+          movedTo: foundPrevNode.data.movedTo,
+          eventDate: foundPrevNode.data.eventDate,
+          movedAmount: foundPrevNode.data.movedAmount,
+          currentAmount: amountOfTraysAfterMove,
+          nextDistinctiveDate: null,
+        },
+        type: "nodeItemNotCurrent",
+      });
+    }
+
+    //delete found node from temp prev nodes
+    const indexOfFoundPrevNode = tempPrevNodes.findIndex(
+      (node) => node.id === foundPrevNode.id
+    );
+    tempPrevNodes.splice(indexOfFoundPrevNode, 1);
+
+    ////iterate through rest of prev nodes
+    tempPrevNodes.forEach((node) => {
+      console.log("---tempPrevNodes.forEach---");
+      // console.log({ tempPrevNodes });
+      console.log({ node });
+      console.log({ currentNodes });
+
+      // debugger;
+      const idOfPrevNode = node.id.split("_")[0];
+
+      //if there's already a node in currentNodes with such an id
+      const foundCurrentNode = currentNodes.find((item) =>
+        item.id.startsWith(idOfPrevNode)
+      );
+
+      if (foundCurrentNode) {
+        foundCurrentNode.data.currentAmount += node.data.currentAmount;
+      }
+      if (!foundCurrentNode) {
+        const newId = `${node.id.split("_")[0]}_${index + 1}`;
+        currentNodes.push({
+          id: newId,
+          position: {
+            x: currentPosition.currentX,
+            y: currentPosition.currentY,
+          },
+          data: {
+            localizationLabel: node.data.localizationLabel,
+            movedFrom: node.data.movedFrom,
+            movedTo: node.data.movedTo,
+            eventDate: node.data.eventDate,
+            movedAmount: node.data.movedAmount,
+            currentAmount: node.data.currentAmount,
+            nextDistinctiveDate: null,
+          },
+          type: "nodeItemNotCurrent",
+        });
+      }
+    });
+
+    //////////////////////
+
+    // for (let i = 0; i < previousNodes.length; i++) {
+
+    //   const prev = previousNodes[i];
+    //   const prevIdPrefix = prev.id.split("_")[0];
+
+    //   //if that is current move
+    //   if (currentItem.name_from === prevIdPrefix) {
+    //     const currentAmountAfterMove =
+    //       prev.data.currentAmount - currentItem.movqty;
+
+    //     if (currentAmountAfterMove > 0) {
+    //       //is not empty -> move to current nodes
+    //       const newId = `${prevIdPrefix}_${index + 1}`;
+    //       currentNodes.push({
+    //         id: newId,
+    //         position: {
+    //           x: currentPosition.currentX,
+    //           y: currentPosition.currentY,
+    //         },
+    //         data: { ...prev.data, currentAmount: currentAmountAfterMove },
+    //         type: "nodeItemNotCurrent",
+    //       });
+    //     }
+    //   }
+
+    //   //if that is not current move
+    //   else {
+    //     const newId = `${prevIdPrefix}_${index + 1}`;
+    //     //check if node with this location is already in current nodes array
+    //     const foundNodeWithThisLocation = currentNodes.find(
+    //       (node) => node.id === newId
+    //     );
+
+    //     if (foundNodeWithThisLocation) {
+    //       foundNodeWithThisLocation.data.currentAmount += prev.data.movedAmount;
+    //     }
+    //     if (!foundNodeWithThisLocation) {
+    //       currentNodes.push({
+    //         id: newId,
+    //         position: {
+    //           x: currentPosition.currentX,
+    //           y: currentPosition.currentY,
+    //         },
+    //         data: { ...prev.data },
+    //         type: "nodeItemNotCurrent",
+    //       });
+    //     }
+    //   }
+    // }
+
+    // console.log("---end---");
+    // console.log({ currentItem });
+    // console.log({ previousNodes });
+    // console.log({ currentNodes });
   }
+  // function addCurrentMoveToCurrentNodes(
+  //   currentItem: Execution,
+  //   index: number,
+  //   previousNodes: Node<CustomNodeData>[],
+  //   currentNodes: Node<CustomNodeData>[],
+  //   currentPosition: Position
+  // ) {
+  // // console.log("---start---");
+  // console.log({ currentItem });
+  // console.log({ previousNodes });
+  // ////current move
+  // //find prev node with id startsWith name_from
+  // const foundPrevNode = previousNodes.find(node => node.id.startsWith(currentItem.name_from));
+  // if(!foundPrevNode) {
+  //   throw new Error("addCurrentMoveToCurrentNodes -> Node not found");
+  // }
+  // const amountOfTraysAfterMove = foundPrevNode.data.currentAmount - currentItem.movqty
+  // //add current move
+  //dodaj aktualny move z currentItem
+  ////odejmij ilosc z current move od prev ilosci
+  //// jezeli 0 -> dodaj aktualny ruch
+  //// jezeli nie -> dodaj takze poprzedni node z updatowana iloscia tac
+  ////dodaj edge
+  //// wydupc node z previousNodes
+  //iteruj przez previousNodes
+  //// sprawdz czy jest juz taki node w currentNodes
+  //// jezeli tak - dodaj ilosc tac
+  //// jezeli nie - przepisz node z nowym id
+  // const newId = `${currentItem.name_to}_${index + 1}`;
+  // //check if there's node in previous nodes with target location
+  // const foundItemWithTargetLocationInPreviousNodes = previousNodes.find(
+  //   (node) => node.id.startsWith(currentItem.name_to)
+  // );
+  // if (foundItemWithTargetLocationInPreviousNodes) {
+  //   // const currentAmountAfterMove =
+  //   //   foundItemWithTargetLocationInPreviousNodes.data.currentAmount +
+  //   //   currentItem.movqty;
+  //   //wywal node ktory dodasz z poprzednich lokalizacji
+  //   const indexOfFoundItemWithTargetLocationInPreviousNodes =
+  //     previousNodes.findIndex((node) => node.id.startsWith(newId));
+  //   foundItemWithTargetLocationInPreviousNodes.data.currentAmount =
+  //     currentItem.movqty;
+  //   // console.log({ foundItemWithTargetLocationInPreviousNodes });
+  //   previousNodes[indexOfFoundItemWithTargetLocationInPreviousNodes] =
+  //     foundItemWithTargetLocationInPreviousNodes;
+  //   //add new node
+  //   currentNodes.push({
+  //     id: newId,
+  //     position: {
+  //       x: currentPosition.currentX,
+  //       y: currentPosition.currentY,
+  //     },
+  //     data: {
+  //       localizationLabel: currentItem.name_to,
+  //       movedFrom: currentItem.name_from,
+  //       movedTo: currentItem.name_to,
+  //       eventDate: currentItem.data_przeniesienia,
+  //       movedAmount: currentItem.movqty,
+  //       currentAmount: currentItem.movqty,
+  //       nextDistinctiveDate: null,
+  //     },
+  //     type: "nodeItem",
+  //   });
+  //   return;
+  // }
+  // currentNodes.push({
+  //   id: newId,
+  //   position: {
+  //     x: currentPosition.currentX,
+  //     y: currentPosition.currentY,
+  //   },
+  //   data: {
+  //     localizationLabel: currentItem.name_to,
+  //     movedFrom: currentItem.name_from,
+  //     movedTo: currentItem.name_to,
+  //     eventDate: currentItem.data_przeniesienia,
+  //     movedAmount: currentItem.movqty,
+  //     currentAmount: currentItem.movqty,
+  //     nextDistinctiveDate: null,
+  //   },
+  //   type: "nodeItem",
+  // });
+  // }
   function createNewDatObjectWithOnlyYearMonthDay(date: Date) {
     const year = date.getFullYear();
     const month = date.getMonth();
