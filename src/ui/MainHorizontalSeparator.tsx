@@ -17,7 +17,6 @@ const MainHorizontalSeparator = (props: NodeProps<Props>) => {
       style={{
         height: 1,
         width: chartPosition.currentX,
-        // backgroundColor: "#333",
         position: "relative",
         borderTop: "1.5px dashed #aaa",
       }}

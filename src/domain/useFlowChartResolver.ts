@@ -1,6 +1,7 @@
 import { MarkerType, type Edge, type Node } from "@xyflow/react";
 import type {
   CustomNodeData,
+  Cut,
   CutsData,
   Execution,
   Position,
@@ -10,11 +11,12 @@ import type {
 } from "./types";
 import { getExecutionData } from "./executionData";
 import useWholeChartPosition from "./stores/useWholeChartPosition";
+import { getCutData } from "./cutData";
 
-// const tempPrcId = 53558;
-const tempPrcId = 53911;
+const tempPrcId = 53558;
+// const tempPrcId = 53911;
 const tempToken =
-  "2a8b42d3c757b6fd0be1f19ad6473fa5f5917cffa604f4b67532f9130f27eb61";
+  "b796b24f8a636f8438281fb6606670afc85bf87d0174991e9dad4f91182afe8e";
 
 export const useFlowChartResolver = () => {
   //hooks
@@ -26,6 +28,7 @@ export const useFlowChartResolver = () => {
       tempPrcId,
       tempToken
     );
+    const cutsData: Cut[] = await getCutData(tempPrcId, tempToken);
 
     //state
     const allNodes: Node<CustomNodeData>[] = [];
@@ -34,6 +37,10 @@ export const useFlowChartResolver = () => {
       currentX: 0,
       currentY: 0,
     };
+    const allInformationNodesPerLocalization = new Map<
+      Node<CustomNodeData>,
+      Cut
+    >();
 
     //create all transportation nodes, edges and separators
     createTransport({ allNodes, allEdges, currentPosition, executionData });
@@ -42,7 +49,7 @@ export const useFlowChartResolver = () => {
     setPosition(currentPosition);
 
     //cuts section
-    createCuts({ allNodes });
+    createCuts({ allNodes, cutsData, allInformationNodesPerLocalization });
 
     return [allNodes, allEdges];
   }
@@ -50,30 +57,30 @@ export const useFlowChartResolver = () => {
   function createCuts(data: CutsData) {
     const { allNodes } = data;
 
-    addMainHorizontalSeparatorNode(allNodes);
+    // addMainHorizontalSeparatorNode(allNodes);
   }
 
-  function addMainHorizontalSeparatorNode(allNodes: Node<CustomNodeData>[]) {
-    console.log({ allNodes });
+  // function addMainHorizontalSeparatorNode(allNodes: Node<CustomNodeData>[]) {
+  //   console.log({ allNodes });
 
-    allNodes.push({
-      id: "separator_cuts_main",
-      position: {
-        x: 185,
-        y: 210,
-      },
-      data: {
-        currentAmount: 0,
-        eventDate: null,
-        localizationLabel: "Cięcie",
-        movedAmount: 0,
-        movedFrom: null,
-        movedTo: "",
-        nextDistinctiveDate: null,
-      },
-      type: "mainHorizontalSeparator",
-    });
-  }
+  //   allNodes.push({
+  //     id: "separator_cuts_main",
+  //     position: {
+  //       x: 185,
+  //       y: 210,
+  //     },
+  //     data: {
+  //       currentAmount: 0,
+  //       eventDate: null,
+  //       localizationLabel: "Cięcie",
+  //       movedAmount: 0,
+  //       movedFrom: null,
+  //       movedTo: "",
+  //       nextDistinctiveDate: null,
+  //     },
+  //     type: "mainHorizontalSeparator",
+  //   });
+  // }
   function createTransport(data: TransportData) {
     const { allNodes, allEdges, currentPosition, executionData } = data;
 
@@ -90,8 +97,8 @@ export const useFlowChartResolver = () => {
       executionData
     );
 
-    // for (let i = 0; i < executionData.length; i++) {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < executionData.length; i++) {
+      // for (let i = 0; i < 6; i++) {
       const currentItem = executionData[i];
       copyNodesToPreserveLastState(currentNodes, previousNodes);
       generateCurrentNodes(
@@ -202,6 +209,10 @@ export const useFlowChartResolver = () => {
     currentNodes.length = 0;
     currentPosition.currentX += 200;
 
+    // if (index === 5) {
+    //   debugger;
+    // }
+
     addCurrentMoveToCurrentNodes(
       currentItem,
       index,
@@ -211,6 +222,11 @@ export const useFlowChartResolver = () => {
     );
 
     for (let i = 0; i < previousNodes.length; i++) {
+      // console.log("---start---");
+      // console.log({ currentItem });
+      // console.log({ previousNodes });
+      // console.log({ currentNodes });
+
       const prev = previousNodes[i];
       const prevIdPrefix = prev.id.split("_")[0];
 
@@ -258,6 +274,11 @@ export const useFlowChartResolver = () => {
         }
       }
     }
+
+    // console.log("---end---");
+    // console.log({ currentItem });
+    // console.log({ previousNodes });
+    // console.log({ currentNodes });
   }
   function addCurrentMoveToCurrentNodes(
     currentItem: Execution,
@@ -274,17 +295,25 @@ export const useFlowChartResolver = () => {
     );
 
     if (foundItemWithTargetLocationInPreviousNodes) {
-      const currentAmountAfterMove =
-        foundItemWithTargetLocationInPreviousNodes.data.currentAmount +
-        currentItem.movqty;
+      // const currentAmountAfterMove =
+      //   foundItemWithTargetLocationInPreviousNodes.data.currentAmount +
+      //   currentItem.movqty;
 
       //wywal node ktory dodasz z poprzednich lokalizacji
       const indexOfFoundItemWithTargetLocationInPreviousNodes =
         previousNodes.findIndex((node) => node.id.startsWith(newId));
-      previousNodes.splice(
-        indexOfFoundItemWithTargetLocationInPreviousNodes,
-        1
-      );
+
+      foundItemWithTargetLocationInPreviousNodes.data.currentAmount =
+        currentItem.movqty;
+      // console.log({ foundItemWithTargetLocationInPreviousNodes });
+
+      previousNodes[indexOfFoundItemWithTargetLocationInPreviousNodes] =
+        foundItemWithTargetLocationInPreviousNodes;
+
+      // previousNodes.splice(
+      //   indexOfFoundItemWithTargetLocationInPreviousNodes,
+      //   1
+      // );
 
       //add new node
       currentNodes.push({
@@ -299,7 +328,7 @@ export const useFlowChartResolver = () => {
           movedTo: currentItem.name_to,
           eventDate: currentItem.data_przeniesienia,
           movedAmount: currentItem.movqty,
-          currentAmount: currentAmountAfterMove,
+          currentAmount: currentItem.movqty,
           nextDistinctiveDate: null,
         },
         type: "nodeItem",

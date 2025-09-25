@@ -82,4 +82,31 @@ export type TransportData = {
 
 export type CutsData = {
   allNodes: Node<CustomNodeData>[];
+  cutsData: Cut[];
+  allInformationNodesPerLocalization: Map<Node<CustomNodeData>, Cut>;
+};
+
+export type Cut = {
+  ordnmb: string;
+  zlecajacy: string;
+  wykonujacy: string | null;
+  plndat: Date | null;
+  stkcnt: number;
+  cutdat: null | Date;
+  height: number | null;
+  height_done: number | null;
+  adddat: Date | null;
+  planam_done: string | null;
+};
+export type CutDTO = {
+  ordnmb: string;
+  zlecajacy: string;
+  wykonujacy: string | null;
+  plndat: string | null;
+  stkcnt: string;
+  cutdat: null | string;
+  height: string | null;
+  height_done: string | null;
+  adddat: string | null;
+  planam_done: string | null;
 };
